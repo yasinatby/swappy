@@ -1,0 +1,36 @@
+# Go
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+build/
+
+# Temporary files
+*.log
+tmp/
+.cache/
