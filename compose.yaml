@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: swappy-backend
+    container_name: swappy-backend
+    ports:
+      - "${SWAPPY_PORT:-8080}:8080"
+    environment:
+      SWAPPY_HOST: 0.0.0.0
+      SWAPPY_PORT: 8080
+    restart: unless-stopped
