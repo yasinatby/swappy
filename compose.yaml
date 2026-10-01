@@ -1,13 +1,44 @@
 services:
+  db:
+    image: postgres:17-alpine
+    container_name: swappy-db
+    environment:
+      POSTGRES_USER: swappy
+      POSTGRES_PASSWORD: swappy
+      POSTGRES_DB: swappy
+    ports:
+      - "${SWAPPY_DB_PORT:-5433}:5432"
+    volumes:
+      - swappy-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U swappy -d swappy"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     image: swappy-backend
     container_name: swappy-backend
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "${SWAPPY_PORT:-8080}:8080"
     environment:
       SWAPPY_HOST: 0.0.0.0
       SWAPPY_PORT: 8080
+      SWAPPY_DATABASE_URL: postgres://swappy:swappy@db:5432/swappy?sslmode=disable
+      SWAPPY_STORAGE_DIR: /data/images
+      SWAPPY_DEV_LOGIN: "${SWAPPY_DEV_LOGIN:-true}"
+      SWAPPY_TOKEN_SECRET: "${SWAPPY_TOKEN_SECRET:-}"
+    volumes:
+      - swappy-images:/data/images
     restart: unless-stopped
+
+volumes:
+  swappy-db:
+  swappy-images:
